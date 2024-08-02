@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authMiddleware, AuthRequest } from "../../middleware";
 import { JWT_SECRET } from "../../config";
-
+import { prisma } from "../../config/config";
 
 // Create a new instance of the Express Router
 const UserRouter = Router();
@@ -18,5 +18,19 @@ const UserRouter = Router();
 UserRouter.get("/username", async (req, res) => {
   console.log('username')
 });
+
+UserRouter.get("/create-sample", async (req, res) => {
+  const newUser = await prisma.user.create({
+    data: {
+      name: "Comet",
+      email: "testdev@gmail.com"
+    }
+  })
+
+  console.log("new created user: ", newUser);
+
+  const allUsers = await prisma.user.findMany();
+  res.json(allUsers)
+})
 
 export default UserRouter;
